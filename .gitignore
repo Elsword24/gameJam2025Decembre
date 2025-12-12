@@ -39,3 +39,28 @@
 
 # debug information files
 *.dwo
+/Assets/Rukha93
+/.vs/GameJam
+/Assets/Settings
+/Assets/TutorialInfo
+/Assets/InputSystem_Actions.inputactions
+/Assets/InputSystem_Actions.inputactions.meta
+/Assets/Readme.asset
+/Assets/Readme.asset.meta
+/Assets/Rukha93.meta
+/Assets/Scenes.meta
+/Assets/scripts.meta
+/Assets/Settings.meta
+/Assets/TutorialInfo.meta
+/Library
+/Logs
+/obj/Debug
+/ProjectSettings
+/Packages
+/UserSettings
+*.vsconfig
+*.md
+/Assembly-CSharp-Editor.csproj
+/Assembly-CSharp.csproj
+/CustomizationSample.csproj
+/MerryYellow.CodeAssist.Editor.csproj
