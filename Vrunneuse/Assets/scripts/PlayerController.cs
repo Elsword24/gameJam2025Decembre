@@ -15,9 +15,13 @@ public class PlayerController : MonoBehaviour
     public float airControl = 0.2f;
     public float Gravity = 20f;
 
+    public GameObject canvasPause;
+    private bool IsPauseMenuOpen;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        canvasPause.SetActive(false);
         rigidbody = GetComponent<Rigidbody>();
     }
 
@@ -28,18 +32,31 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        move = -Input.GetAxis("Horizontal");
-
-        if (Input.GetKeyDown(KeyCode.Space))
+        // Gestion du menu pause avec Échap
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
-            Jump();
+            IsPauseMenuOpen = !IsPauseMenuOpen;  // Toggle l'état du menu
+            canvasPause.SetActive(IsPauseMenuOpen);  // Active/désactive le canvas selon l'état
+            Time.timeScale = IsPauseMenuOpen ? 0f : 1f;  // Met en pause (0) ou reprend (1) le jeu
         }
-
-        if (Input.GetKeyDown(KeyCode.E))
+        // Désactive les inputs de mouvement si le menu est ouvert
+        if (!IsPauseMenuOpen)
         {
-            Dash();
+            move = -Input.GetAxis("Horizontal");
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                Jump();
+            }
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                Dash();
+            }
         }
-
+        else
+        {
+            // Réinitialise move à 0 pour éviter tout mouvement résiduel
+            move = 0f;
+        }
     }
 
     private void FixedUpdate()
@@ -47,7 +64,7 @@ public class PlayerController : MonoBehaviour
         rigidbody.AddForce(Vector3.down * Gravity, ForceMode.Acceleration);
 
 
-        if (isDashing) return;
+        if (isDashing || IsPauseMenuOpen) return;
 
         float control = isGrounded ? 1f : airControl;
 

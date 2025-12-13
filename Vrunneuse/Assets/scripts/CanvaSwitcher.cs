@@ -5,7 +5,6 @@ public class CanvaSwitcher : MonoBehaviour
 {
     public GameObject canvasMenuPrincipal;
     public GameObject canvasCredit;
-    public Text CreditText;
 
 
     void Start()
