@@ -1,5 +1,6 @@
-using System;
+using System.Collections.Generic;
 using UnityEngine;
+using System.IO;
 
 public class PlayerController : MonoBehaviour
 {
@@ -14,11 +15,18 @@ public class PlayerController : MonoBehaviour
     private bool isGrounded = false;
     public float airControl = 0.2f;
     public float Gravity = 20f;
+    public List<ActionData> recordedActions = new List<ActionData>();
+    private float startTime;
+    private bool isRecording = true;
+    public RespawnManager RespawnManager;
+    private bool isRespawning = false;
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         rigidbody = GetComponent<Rigidbody>();
+        startTime = Time.time;
     }
 
     // Update is called once per frame
@@ -29,13 +37,16 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         move = -Input.GetAxis("Horizontal");
-
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            print("test");
+        }
         if (Input.GetKeyDown(KeyCode.Space))
         {
             Jump();
         }
 
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.LeftShift))
         {
             Dash();
         }
@@ -45,8 +56,6 @@ public class PlayerController : MonoBehaviour
     private void FixedUpdate()
     {
         rigidbody.AddForce(Vector3.down * Gravity, ForceMode.Acceleration);
-
-
         if (isDashing) return;
 
         float control = isGrounded ? 1f : airControl;
@@ -63,6 +72,18 @@ public class PlayerController : MonoBehaviour
             control
         );
 
+        if (isRecording)
+        {
+            recordedActions.Add(new ActionData(
+                    transform.position,
+                    transform.rotation,
+                    rigidbody.linearVelocity,
+                    false,
+                    isDashing,
+                    isGrounded,
+                    Time.time - startTime
+                ));
+        }
     }
 
     void Jump()
@@ -107,5 +128,47 @@ public class PlayerController : MonoBehaviour
     {
         isGrounded = false;
     }
+
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("void"))
+        {
+            RespawnManager.RequestRespawn();
+        }
+    }
+    public List<ActionData> StopRecording()
+    {
+        isRecording = false;
+        Debug.Log($"Record stopped  send {recordedActions.Count} actions");
+        return recordedActions;
+    }
+
+    public void StartRecording()
+    {
+        recordedActions.Clear();
+        startTime = Time.time;
+        isRecording = true;
+        Debug.Log("StartRecording");
+    }
+
+    public void SaveActionToFile(string FilePath)
+    {
+        string json = JsonUtility.ToJson(new ActionWrapper { actions = recordedActions });
+        File.WriteAllText(FilePath, json);
+    }
+
+    public void ResetRespawnState()
+    {
+        isRespawning = false;
+    }
+
+    [System.Serializable]
+    public class ActionWrapper
+    {
+        public List<ActionData> actions;
+    }
+
+
 }
 
