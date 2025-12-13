@@ -16,7 +16,7 @@ public class PlayerController : MonoBehaviour
     public float Gravity = 20f;
 
     public GameObject canvasPause;
-    private bool IsPauseMenuOpen;
+    public bool IsPauseMenuOpen=false;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
