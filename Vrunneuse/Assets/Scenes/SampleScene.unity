@@ -1009,6 +1009,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BackGame
   canvasResume: {fileID: 1741904680}
+  playerController: {fileID: 1902850569}
 --- !u!1 &595377467
 GameObject:
   m_ObjectHideFlags: 0
