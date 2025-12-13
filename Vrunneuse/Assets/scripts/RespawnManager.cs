@@ -58,7 +58,8 @@ public class RespawnManager : MonoBehaviour
         foreach (var c in PlayerController.GetComponentsInChildren<Collider>())
             c.enabled = enabled;
 
-        foreach (var c in Avatar.GetComponentsInChildren<Collider>())
+        foreach (var c in Avatar.
+            GetComponentsInChildren<Collider>())
             c.enabled = enabled;
     }
 }

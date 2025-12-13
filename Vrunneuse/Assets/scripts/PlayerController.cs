@@ -133,9 +133,17 @@ public class PlayerController : MonoBehaviour
 
     private void OnCollisionStay(Collision other)
     {
-        isGrounded = true;
-        jumpCharge = 1;
-        dashCharges = 1;
+
+        foreach(ContactPoint contact in other.contacts)
+        {
+            if (contact.normal.y > 0.7)
+            {
+                isGrounded = true;
+                jumpCharge = 1;
+                dashCharges = 1;
+            }
+        }
+
     }
 
     private void OnCollisionExit(Collision other)
