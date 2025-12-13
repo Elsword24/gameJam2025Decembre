@@ -1,22 +1,43 @@
+using NUnit.Framework;
+using System.IO;
 using UnityEngine;
+using System.Collections.Generic;
+
 
 public class GameController : MonoBehaviour
 {
     //Player start coordonnées
-    PlayerController playerController;
-    //Control de l'avatar
+    public PlayerController playerController;
+    public AvatarController avatar;
+    private bool isFirstRun = true;
     //Stockage des mouvements
     //fin de tableau
-    
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+        //playerController = GetComponent<PlayerController>();
+
+        if (isFirstRun)
+        {
+            string path = Application.persistentDataPath + "defaultPath.json";
+            if (File.Exists(path))
+            {
+                string json = File.ReadAllText(path);
+                PlayerController.ActionWrapper wrapper = JsonUtility.FromJson<PlayerController.ActionWrapper>(json);
+                avatar.StartReplay(wrapper.actions);
+            }
+            PlayerPrefs.SetInt("FirstRun", 0);
+        } else
+        {
+            isFirstRun = false;
+        }
     }
 
-    // Update is called once per frame
-    void Update()
+    public void OnPlayerRespawn()
     {
-        
+        List<ActionData> lastRun = new List<ActionData>( playerController.StopRecording());
+        avatar.StartReplay(lastRun);
+        playerController.StartRecording();
     }
+
+
 }
