@@ -20,6 +20,7 @@ public class PlayerController : MonoBehaviour
     private bool isRecording = true;
     public RespawnManager RespawnManager;
     private bool isRespawning = false;
+    public float dashDuration = 0.15f;
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -56,7 +57,15 @@ public class PlayerController : MonoBehaviour
     private void FixedUpdate()
     {
         rigidbody.AddForce(Vector3.down * Gravity, ForceMode.Acceleration);
-        if (isDashing) return;
+        if (isDashing)
+        {
+            rigidbody.linearVelocity = new Vector3(
+                   rigidbody.linearVelocity.x,
+                   0f,
+                   rigidbody.linearVelocity.z
+                );
+            return;
+        }
 
         float control = isGrounded ? 1f : airControl;
 
@@ -101,19 +110,24 @@ public class PlayerController : MonoBehaviour
         if (dashCharges == 0 || isDashing) return;
 
         isDashing = true;
+        dashCharges--;
 
         Vector3 dashDirection = new Vector3(move, 0f, 0f);
 
         if (dashDirection == Vector3.zero) dashDirection = transform.right;
 
+        rigidbody.useGravity = false;
+        rigidbody.linearVelocity = Vector3.zero;
+        rigidbody.angularVelocity = Vector3.zero;
+
         rigidbody.AddForce(dashDirection.normalized * dashForce, ForceMode.Impulse);
-        dashCharges --;
 
         Invoke(nameof(EndDash), 0.2f);
     }
 
     void EndDash()
     {
+        rigidbody.useGravity = true;
         isDashing = false;
     }
 
