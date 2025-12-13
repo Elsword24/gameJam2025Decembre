@@ -3,7 +3,11 @@
 1. Clone the repository
 2. Install Unity Hub
 3. Install Unity version: 2022.3.15f1
-4. Open the project via Unity Hub (Open > select project folder)
+4. Open the project via Unity Hub (Open > select project folder) **Project is Vrunneuse not gameJam2025Decembre !!!**
+
+Once Project open with Unity hub : 
+
+
 5. Wait for Library generation
 6. Open the main scene located in Assets/Scenes/
 
