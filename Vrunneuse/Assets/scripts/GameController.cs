@@ -35,9 +35,9 @@ public class GameController : MonoBehaviour
     public void OnPlayerRespawn()
     {
         playerController.DisablePhysics();
+    
         List<ActionData> lastRun = new List<ActionData>( playerController.StopRecording());
         avatar.StartReplay(lastRun);
-        playerController.StartRecording();
     }
 
 
