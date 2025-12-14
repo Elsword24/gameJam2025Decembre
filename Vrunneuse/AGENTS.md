@@ -2,7 +2,7 @@
 - Project name: Vrunneuse
 - Unity version: Unity 6000.3.1f1
 - Active game object:
-  - Name: EventSystem
+  - Name: Player
   - Tag: Untagged
-  - Layer: Default
+  - Layer: Player
 <!-- UNITY CODE ASSIST INSTRUCTIONS END -->
