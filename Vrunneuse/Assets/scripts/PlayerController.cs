@@ -25,10 +25,6 @@ public class PlayerController : MonoBehaviour
     public GameObject canvasPause;
     public bool IsPauseMenuOpen = false;
 
-    public Vector3 externalVelocity = Vector3.zero;
-
-
-
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -82,34 +78,21 @@ public class PlayerController : MonoBehaviour
                    rigidbody.linearVelocity.z
                 );
             return;
-
-                }
+        }
 
         float control = isGrounded ? 1f : airControl;
 
         Vector3 targetVelocity = new Vector3(
-            move * speed + externalVelocity.x,
+            move * speed,
             rigidbody.linearVelocity.y,
             rigidbody.linearVelocity.z
         );
-       
 
-        if (externalVelocity != Vector3.zero)
-        {
-            rigidbody.linearVelocity = new Vector3(
-                targetVelocity.x,
-                externalVelocity.y !=0.0f ? externalVelocity.y : rigidbody.linearVelocity.y,
-                rigidbody.linearVelocity.z
-            );
-        }
-        else
-        {
-            rigidbody.linearVelocity = Vector3.Lerp(
-                rigidbody.linearVelocity,
-                targetVelocity,
-                control
-            );
-        }
+        rigidbody.linearVelocity = Vector3.Lerp(
+            rigidbody.linearVelocity,
+            targetVelocity,
+            control
+        );
 
         Debug.Log("Player velocity AFTER set: " + rigidbody.linearVelocity.y +
                   " | Target was: " + targetVelocity.y);
@@ -131,16 +114,15 @@ public class PlayerController : MonoBehaviour
     {
         if (jumpCharge != 0)
         {
-            externalVelocity = Vector3.zero;
             rigidbody.AddForce(jump * jumpForce, ForceMode.Impulse);
             jumpCharge --;
+
         }
     }
 
     void Dash()
     {
         if (dashCharges == 0 || isDashing) return;
-
 
         isDashing = true;
         dashCharges--;
