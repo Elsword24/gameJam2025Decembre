@@ -1,5 +1,6 @@
-using System;
+using System.Collections.Generic;
 using UnityEngine;
+using System.IO;
 
 public class PlayerController : MonoBehaviour
 {
@@ -14,6 +15,12 @@ public class PlayerController : MonoBehaviour
     private bool isGrounded = false;
     public float airControl = 0.2f;
     public float Gravity = 20f;
+    public List<ActionData> recordedActions = new List<ActionData>();
+    private float startTime;
+    private bool isRecording = true;
+    public RespawnManager RespawnManager;
+    private bool isRespawning = false;
+    public float dashDuration = 0.15f;
 
     public GameObject canvasPause;
     public bool IsPauseMenuOpen=false;
@@ -23,6 +30,7 @@ public class PlayerController : MonoBehaviour
     {
         canvasPause.SetActive(false);
         rigidbody = GetComponent<Rigidbody>();
+        startTime = Time.time;
     }
 
     // Update is called once per frame
@@ -65,6 +73,15 @@ public class PlayerController : MonoBehaviour
 
 
         if (isDashing || IsPauseMenuOpen) return;
+        if (isDashing)
+        {
+            rigidbody.linearVelocity = new Vector3(
+                   rigidbody.linearVelocity.x,
+                   0f,
+                   rigidbody.linearVelocity.z
+                );
+            return;
+        }
 
         float control = isGrounded ? 1f : airControl;
 
@@ -80,6 +97,18 @@ public class PlayerController : MonoBehaviour
             control
         );
 
+        if (isRecording)
+        {
+            recordedActions.Add(new ActionData(
+                    transform.position,
+                    transform.rotation,
+                    rigidbody.linearVelocity,
+                    false,
+                    isDashing,
+                    isGrounded,
+                    Time.time - startTime
+                ));
+        }
     }
 
     void Jump()
@@ -97,19 +126,24 @@ public class PlayerController : MonoBehaviour
         if (dashCharges == 0 || isDashing) return;
 
         isDashing = true;
+        dashCharges--;
 
         Vector3 dashDirection = new Vector3(move, 0f, 0f);
 
         if (dashDirection == Vector3.zero) dashDirection = transform.right;
 
+        rigidbody.useGravity = false;
+        rigidbody.linearVelocity = Vector3.zero;
+        rigidbody.angularVelocity = Vector3.zero;
+
         rigidbody.AddForce(dashDirection.normalized * dashForce, ForceMode.Impulse);
-        dashCharges --;
 
         Invoke(nameof(EndDash), 0.2f);
     }
 
     void EndDash()
     {
+        rigidbody.useGravity = true;
         isDashing = false;
     }
 
@@ -124,5 +158,47 @@ public class PlayerController : MonoBehaviour
     {
         isGrounded = false;
     }
+
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("void"))
+        {
+            RespawnManager.RequestRespawn();
+        }
+    }
+    public List<ActionData> StopRecording()
+    {
+        isRecording = false;
+        Debug.Log($"Record stopped  send {recordedActions.Count} actions");
+        return recordedActions;
+    }
+
+    public void StartRecording()
+    {
+        recordedActions.Clear();
+        startTime = Time.time;
+        isRecording = true;
+        Debug.Log("StartRecording");
+    }
+
+    public void SaveActionToFile(string FilePath)
+    {
+        string json = JsonUtility.ToJson(new ActionWrapper { actions = recordedActions });
+        File.WriteAllText(FilePath, json);
+    }
+
+    public void ResetRespawnState()
+    {
+        isRespawning = false;
+    }
+
+    [System.Serializable]
+    public class ActionWrapper
+    {
+        public List<ActionData> actions;
+    }
+
+
 }
 
