@@ -15,6 +15,10 @@ public class PlayerController : MonoBehaviour
     public float airControl = 0.2f;
     public float Gravity = 20f;
 
+    public Vector3 externalVelocity = Vector3.zero;
+
+
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -44,25 +48,42 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        rigidbody.AddForce(Vector3.down * Gravity, ForceMode.Acceleration);
+        if (externalVelocity == Vector3.zero)
+            rigidbody.AddForce(Vector3.down * Gravity, ForceMode.Acceleration);
+        
 
 
         if (isDashing) return;
 
+        
         float control = isGrounded ? 1f : airControl;
 
         Vector3 targetVelocity = new Vector3(
-            move * speed,
+            move * speed + externalVelocity.x,
             rigidbody.linearVelocity.y,
             rigidbody.linearVelocity.z
         );
+       
 
-        rigidbody.linearVelocity = Vector3.Lerp(
-            rigidbody.linearVelocity,
-            targetVelocity,
-            control
-        );
+        if (externalVelocity != Vector3.zero)
+        {
+            rigidbody.linearVelocity = new Vector3(
+                targetVelocity.x,
+                rigidbody.linearVelocity.y,
+                rigidbody.linearVelocity.z
+            );
+        }
+        else
+        {
+            rigidbody.linearVelocity = Vector3.Lerp(
+                rigidbody.linearVelocity,
+                targetVelocity,
+                control
+            );
+        }
 
+        Debug.Log("Player velocity AFTER set: " + rigidbody.linearVelocity.x +
+                  " | Target was: " + targetVelocity.x);
     }
 
     void Jump()
@@ -71,13 +92,13 @@ public class PlayerController : MonoBehaviour
         {
             rigidbody.AddForce(jump * jumpForce, ForceMode.Impulse);
             jumpCharge --;
-
         }
     }
 
     void Dash()
     {
         if (dashCharges == 0 || isDashing) return;
+
 
         isDashing = true;
 
