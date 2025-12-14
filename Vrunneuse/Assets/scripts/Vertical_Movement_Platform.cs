@@ -40,8 +40,14 @@ public class Vertical_Movement_Platform : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            playerOnPlateform = other.gameObject.GetComponent<PlayerController>();
-            playerRB = other.gameObject.GetComponent<Rigidbody>();
+            ContactPoint contact = other.contacts[0];
+            Rigidbody playerRB_temp = other.gameObject.GetComponent<Rigidbody>();
+            if (contact.normal.y > 0.5f && playerRB_temp.linearVelocity.y <= 0.0f)
+            {
+                playerOnPlateform = other.gameObject.GetComponent<PlayerController>();
+                playerRB = playerRB_temp;
+                
+            }
         }
     }
 

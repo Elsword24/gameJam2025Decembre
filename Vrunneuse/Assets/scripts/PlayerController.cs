@@ -60,7 +60,7 @@ public class PlayerController : MonoBehaviour
 
         Vector3 targetVelocity = new Vector3(
             move * speed + externalVelocity.x,
-            rigidbody.linearVelocity.y+externalVelocity.y,
+            rigidbody.linearVelocity.y,
             rigidbody.linearVelocity.z
         );
        
@@ -69,7 +69,7 @@ public class PlayerController : MonoBehaviour
         {
             rigidbody.linearVelocity = new Vector3(
                 targetVelocity.x,
-                rigidbody.linearVelocity.y+externalVelocity.y,
+                externalVelocity.y !=0.0f ? externalVelocity.y : rigidbody.linearVelocity.y,
                 rigidbody.linearVelocity.z
             );
         }
@@ -90,6 +90,7 @@ public class PlayerController : MonoBehaviour
     {
         if (jumpCharge != 0)
         {
+            externalVelocity = Vector3.zero;
             rigidbody.AddForce(jump * jumpForce, ForceMode.Impulse);
             jumpCharge --;
         }
