@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
@@ -19,7 +20,6 @@ public class PlayerController : MonoBehaviour
     private float startTime;
     private bool isRecording = true;
     public RespawnManager RespawnManager;
-    private bool isRespawning = false;
     public float dashDuration = 0.15f;
     private bool isTouchingWall = false;
     private Vector3 wallNormal;
@@ -29,16 +29,8 @@ public class PlayerController : MonoBehaviour
     public GameObject canvasPause;
     public bool IsPauseMenuOpen = false;
 
-    enum PlayerAnimState
-    {
-        Idle,
-        Run,
-        Jump
-    }
 
-    PlayerAnimState currentAnim;
-
-
+    public Vector3 externalVelocity = Vector3.zero;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -51,28 +43,30 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
 
     private float move;
+    private bool isRespawning;
 
     void Update()
     {
-        Debug.Log($"Grounded={isGrounded} | Y={rigidbody.linearVelocity.y} | X={rigidbody.linearVelocity.x}");
-        Debug.Log(currentAnim);
+            float horizontalSpeed = Mathf.Abs(rigidbody.linearVelocity.x);
+
+            animator.SetFloat("Speed", horizontalSpeed);
+            animator.SetBool("isGrounded", isGrounded);
+            animator.SetFloat("verticalSpeed", rigidbody.linearVelocity.y);
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            Debug.Log("Escape Press");
-            IsPauseMenuOpen = !IsPauseMenuOpen;
-            canvasPause.SetActive(IsPauseMenuOpen);
-            Time.timeScale=IsPauseMenuOpen ? 0 : 1;
+            IsPauseMenuOpen = !IsPauseMenuOpen;  // Toggle l'état du menu
+            canvasPause.SetActive(IsPauseMenuOpen);  // Active/désactive le canvas selon l'état
+            Time.timeScale = IsPauseMenuOpen ? 0f : 1f;
         }
         if (!IsPauseMenuOpen)
         {
             move = -Input.GetAxis("Horizontal");
-            if (Input.GetKeyDown(KeyCode.Space) && jumpCharge >0)
+            if (Input.GetKeyDown(KeyCode.Space) && jumpCharge > 0)
             {
                 Jump();
             }
-
-            if (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.LeftShift))
+            if (Input.GetKeyDown(KeyCode.E))
             {
                 Dash();
             }
@@ -81,39 +75,13 @@ public class PlayerController : MonoBehaviour
         {
             move = 0f;
         }
+        Debug.Log($"Speed={Mathf.Abs(rigidbody.linearVelocity.x)} | Grounded={isGrounded} | Y={rigidbody.linearVelocity.y}");
 
-        if (isGrounded)
-        {
-            Debug.Log("Landed");
-        }
-
-        if (!isGrounded)
-        {
-            PlayAnim(PlayerAnimState.Jump);
-        }
-        else if (Mathf.Abs(move) > 0.1f)
-        {
-            PlayAnim(PlayerAnimState.Run);
-        }
-        else
-        {
-            PlayAnim(PlayerAnimState.Idle);
-        }
-
-
-
-        animator.SetFloat("speed", Mathf.Abs(move));
-        animator.SetBool("IsGrounded", isGrounded);
-        animator.SetFloat("VerticalSpeed", rigidbody.linearVelocity.y);
     }
 
     private void FixedUpdate()
     {
-        if (isGrounded)
-        {
-            jumpCharge = 1;
-            dashCharges = 1;
-        }
+        isGrounded = false;
         float timestamp = Time.fixedTime - startTime;
 
         if (!isTouchingWall)
@@ -131,48 +99,51 @@ public class PlayerController : MonoBehaviour
                    rigidbody.linearVelocity.z
                 );
             return;
+        }
 
-                }
+        bool isWallSliding =
+            !isGrounded &&
+            isTouchingWall &&
+            rigidbody.linearVelocity.y < 0f &&
+            Mathf.Sign(move) == -Mathf.Sign(wallNormal.x);
+
+        if (isWallSliding)
+        {
+            rigidbody.linearVelocity = new Vector3(
+                0f,
+                Mathf.Max(rigidbody.linearVelocity.y, wallSlideSpeed),
+                rigidbody.linearVelocity.z
+            );
+
+            return;
+        }
 
         float control = isGrounded ? 1f : airControl;
 
         Vector3 targetVelocity = new Vector3(
-            move * speed + externalVelocity.x,
+            move * speed,
             rigidbody.linearVelocity.y,
             rigidbody.linearVelocity.z
         );
-       
 
-        if (externalVelocity != Vector3.zero)
-        {
-            rigidbody.linearVelocity = new Vector3(
-                targetVelocity.x,
-                externalVelocity.y !=0.0f ? externalVelocity.y : rigidbody.linearVelocity.y,
-                rigidbody.linearVelocity.z
-            );
-        }
-        else
-        {
-            rigidbody.linearVelocity = Vector3.Lerp(
-                rigidbody.linearVelocity,
-                targetVelocity,
-                control
-            );
-        }
+        rigidbody.linearVelocity = Vector3.Lerp(
+            rigidbody.linearVelocity,
+            targetVelocity,
+            control
+        );
 
-        Debug.Log("Player velocity AFTER set: " + rigidbody.linearVelocity.y +
-                  " | Target was: " + targetVelocity.y);
         if (isRecording)
         {
             recordedActions.Add(new ActionData(
-                    transform.position,
-                    transform.rotation,
-                    rigidbody.linearVelocity,
-                    false,
-                    isDashing,
-                    isGrounded,
-                    Time.time - startTime
-                ));
+                transform.position,
+                transform.rotation,
+                rigidbody.linearVelocity,
+                false,
+                isDashing,
+                isGrounded,
+                timestamp
+            ));
+
         }
     }
 
@@ -180,16 +151,15 @@ public class PlayerController : MonoBehaviour
     {
         if (jumpCharge != 0)
         {
-            externalVelocity = Vector3.zero;
             rigidbody.AddForce(jump * jumpForce, ForceMode.Impulse);
-            jumpCharge --;
+            jumpCharge--;
+
         }
     }
 
     void Dash()
     {
         if (dashCharges == 0 || isDashing) return;
-
 
         isDashing = true;
         dashCharges--;
@@ -215,9 +185,10 @@ public class PlayerController : MonoBehaviour
 
     private void OnCollisionStay(Collision other)
     {
+
         isTouchingWall = false;
 
-        foreach(ContactPoint contact in other.contacts)
+        foreach (ContactPoint contact in other.contacts)
         {
             if (contact.normal.y > 0.7)
             {
@@ -226,9 +197,19 @@ public class PlayerController : MonoBehaviour
                 dashCharges = 1;
             }
 
+            if (Math.Abs(contact.normal.x) > 0.7f)
+            {
+                isTouchingWall = true;
+                wallNormal = contact.normal;
+            }
+        }
+
+    }
+
     private void OnCollisionExit(Collision other)
     {
         isGrounded = false;
+        isTouchingWall = false;
     }
 
 
@@ -265,21 +246,6 @@ public class PlayerController : MonoBehaviour
         isRespawning = false;
     }
 
-    void PlayAnim(PlayerAnimState newState)
-    {
-        if (currentAnim == newState) return;
-
-        currentAnim = newState;
-
-        animator.CrossFade(
-            newState.ToString(),
-            0.15f,  
-            0        
-        );
-    }
-
-
-
     [System.Serializable]
     public class ActionWrapper
     {
@@ -287,6 +253,4 @@ public class PlayerController : MonoBehaviour
     }
 
 
-
 }
-
