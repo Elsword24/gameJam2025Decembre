@@ -718,77 +718,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 595377467}
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
---- !u!1001 &658268908
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 950892109}
-    m_Modifications:
-    - target: {fileID: 3991541093415276409, guid: 501a56a3daed0e148acd66811479cd71, type: 3}
-      propertyPath: m_Material
-      value: 
-      objectReference: {fileID: 13400000, guid: eed8cee71ea79c9418a63b4f56df83bf, type: 2}
-    - target: {fileID: 4044878439727279899, guid: 501a56a3daed0e148acd66811479cd71, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4044878439727279899, guid: 501a56a3daed0e148acd66811479cd71, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 6.16
-      objectReference: {fileID: 0}
-    - target: {fileID: 4044878439727279899, guid: 501a56a3daed0e148acd66811479cd71, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 4044878439727279899, guid: 501a56a3daed0e148acd66811479cd71, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4044878439727279899, guid: 501a56a3daed0e148acd66811479cd71, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4044878439727279899, guid: 501a56a3daed0e148acd66811479cd71, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4044878439727279899, guid: 501a56a3daed0e148acd66811479cd71, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4044878439727279899, guid: 501a56a3daed0e148acd66811479cd71, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4044878439727279899, guid: 501a56a3daed0e148acd66811479cd71, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4044878439727279899, guid: 501a56a3daed0e148acd66811479cd71, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5768152464955781785, guid: 501a56a3daed0e148acd66811479cd71, type: 3}
-      propertyPath: m_Name
-      value: Horizontal_Mobile_Platform
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 501a56a3daed0e148acd66811479cd71, type: 3}
---- !u!4 &658268909 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4044878439727279899, guid: 501a56a3daed0e148acd66811479cd71, type: 3}
-  m_PrefabInstance: {fileID: 658268908}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &816048058 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 3139413699962960846, guid: d6826b3a01b633b4fadc419c45a704f3, type: 3}
-  m_PrefabInstance: {fileID: 7309441968053276921}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -871,13 +800,8 @@ Transform:
   - {fileID: 1882241640}
   - {fileID: 345300742}
   - {fileID: 1305208710}
-<<<<<<<< HEAD:Vrunneuse/Assets/Scenes/Level0Layout.unity
   - {fileID: 572055794}
   - {fileID: 1094717845}
-========
-  - {fileID: 658268909}
-  - {fileID: 816048058}
->>>>>>>> Yoann:Vrunneuse/Assets/Scenes/Test_Physics_Plateform.unity
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1094717844
@@ -1489,13 +1413,8 @@ GameObject:
   - component: {fileID: 1921645902}
   - component: {fileID: 1921645901}
   m_Layer: 0
-<<<<<<<< HEAD:Vrunneuse/Assets/Scenes/Level0Layout.unity
   m_Name: GameManager
   m_TagString: Untagged
-========
-  m_Name: Player
-  m_TagString: Player
->>>>>>>> Yoann:Vrunneuse/Assets/Scenes/Test_Physics_Plateform.unity
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1526,7 +1445,6 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2042d5cfb9cf93d4e9098c0e3273aeea, type: 3}
   m_Name: 
-<<<<<<<< HEAD:Vrunneuse/Assets/Scenes/Level0Layout.unity
   m_EditorClassIdentifier: Assembly-CSharp::RespawnManager
   Controller: {fileID: 1921645902}
   PlayerController: {fileID: 1280208328}
@@ -1534,24 +1452,10 @@ MonoBehaviour:
   respawnPoint: {fileID: 572055794}
 --- !u!114 &1921645902
 MonoBehaviour:
-========
-  m_EditorClassIdentifier: '::'
-  jumpForce: 4
-  jumpCharge: 1
-  speed: 4
-  dashCharges: 1
-  dashForce: 10
-  airControl: 0.2
-  Gravity: 8
-  externalVelocity: {x: 0, y: 0, z: 0}
---- !u!54 &1902850570
-Rigidbody:
->>>>>>>> Yoann:Vrunneuse/Assets/Scenes/Test_Physics_Plateform.unity
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-<<<<<<<< HEAD:Vrunneuse/Assets/Scenes/Level0Layout.unity
   m_GameObject: {fileID: 1921645899}
   m_Enabled: 1
   m_EditorHideFlags: 0
@@ -1560,86 +1464,6 @@ Rigidbody:
   m_EditorClassIdentifier: Assembly-CSharp::GameController
   playerController: {fileID: 1280208328}
   avatar: {fileID: 1785514509}
-========
-  m_GameObject: {fileID: 1902850564}
-  serializedVersion: 5
-  m_Mass: 1
-  m_LinearDamping: 0
-  m_AngularDamping: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 1
-  m_Constraints: 88
-  m_CollisionDetection: 0
---- !u!1001 &7309441968053276921
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 950892109}
-    m_Modifications:
-    - target: {fileID: 3139413699962960846, guid: d6826b3a01b633b4fadc419c45a704f3, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0.22
-      objectReference: {fileID: 0}
-    - target: {fileID: 3139413699962960846, guid: d6826b3a01b633b4fadc419c45a704f3, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 3139413699962960846, guid: d6826b3a01b633b4fadc419c45a704f3, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 3139413699962960846, guid: d6826b3a01b633b4fadc419c45a704f3, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3139413699962960846, guid: d6826b3a01b633b4fadc419c45a704f3, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3139413699962960846, guid: d6826b3a01b633b4fadc419c45a704f3, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3139413699962960846, guid: d6826b3a01b633b4fadc419c45a704f3, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3139413699962960846, guid: d6826b3a01b633b4fadc419c45a704f3, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3139413699962960846, guid: d6826b3a01b633b4fadc419c45a704f3, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3139413699962960846, guid: d6826b3a01b633b4fadc419c45a704f3, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4881800540103009868, guid: d6826b3a01b633b4fadc419c45a704f3, type: 3}
-      propertyPath: m_Name
-      value: Vertical_Mobile_Platform
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: d6826b3a01b633b4fadc419c45a704f3, type: 3}
->>>>>>>> Yoann:Vrunneuse/Assets/Scenes/Test_Physics_Plateform.unity
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
