@@ -549,7 +549,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -214.7, y: -126.94}
+  m_AnchoredPosition: {x: -550.32, y: -288.13}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &342436166
@@ -1333,6 +1333,12 @@ MonoBehaviour:
   dashForce: 10
   airControl: 0.2
   Gravity: 8
+  recordedActions: []
+  RespawnManager: {fileID: 0}
+  dashDuration: 0.15
+  canvasPause: {fileID: 0}
+  IsPauseMenuOpen: 0
+  externalVelocity: {x: 0, y: 0, z: 0}
 --- !u!54 &631660254
 Rigidbody:
   m_ObjectHideFlags: 0
