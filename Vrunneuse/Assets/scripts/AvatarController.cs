@@ -11,8 +11,6 @@ public class AvatarController : MonoBehaviour
     private int currentIndex = 0;
     private float replayStartTime;
     private Animator animator;
-
-
     void Start()
     {
         animator = GetComponent<Animator>();
@@ -30,7 +28,11 @@ public class AvatarController : MonoBehaviour
 
             if (elapsedTime >= action.timestamp)
             {
-                transform.position = action.position;
+                transform.position = transform.position = Vector3.Lerp(
+                                    transform.position,
+                                    action.position,
+                                    10f * Time.deltaTime
+                                );
                 transform.rotation = action.rotation;
                 if (!string.IsNullOrEmpty(action.animationName))
                 {
