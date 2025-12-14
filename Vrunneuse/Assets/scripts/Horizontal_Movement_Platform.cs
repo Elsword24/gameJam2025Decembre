@@ -1,4 +1,4 @@
-using System;
+/*using System;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using Unity.Mathematics;
@@ -109,3 +109,4 @@ public class PlateformMover : MonoBehaviour
         }
     }
 }
+*/
