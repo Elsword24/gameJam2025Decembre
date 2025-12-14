@@ -22,10 +22,13 @@ public class PlayerController : MonoBehaviour
     private bool isRespawning = false;
     public float dashDuration = 0.15f;
 
+    public GameObject canvasPause;
+    public bool IsPauseMenuOpen = false;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        canvasPause.SetActive(false);
         rigidbody = GetComponent<Rigidbody>();
         startTime = Time.time;
     }
@@ -40,16 +43,23 @@ public class PlayerController : MonoBehaviour
         move = -Input.GetAxis("Horizontal");
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            print("test");
+            Debug.Log("Escape Press");
+            IsPauseMenuOpen = !IsPauseMenuOpen;
+            canvasPause.SetActive(IsPauseMenuOpen);
+            Time.timeScale=IsPauseMenuOpen ? 0 : 1;
         }
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (!IsPauseMenuOpen)
         {
-            Jump();
-        }
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                Jump();
+            }
 
-        if (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.LeftShift))
-        {
-            Dash();
+            if (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.LeftShift))
+            {
+                Dash();
+
+            }
         }
 
     }
@@ -57,6 +67,7 @@ public class PlayerController : MonoBehaviour
     private void FixedUpdate()
     {
         rigidbody.AddForce(Vector3.down * Gravity, ForceMode.Acceleration);
+        if (IsPauseMenuOpen) return;
         if (isDashing)
         {
             rigidbody.linearVelocity = new Vector3(
