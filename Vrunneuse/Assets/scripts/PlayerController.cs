@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
@@ -21,6 +22,9 @@ public class PlayerController : MonoBehaviour
     public RespawnManager RespawnManager;
     private bool isRespawning = false;
     public float dashDuration = 0.15f;
+    private bool isTouchingWall = false;
+    private Vector3 wallNormal;
+    public float wallSlideSpeed = -1.5f;
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -56,6 +60,8 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        float timestamp = Time.fixedTime - startTime;
+
         rigidbody.AddForce(Vector3.down * Gravity, ForceMode.Acceleration);
         if (isDashing)
         {
@@ -64,6 +70,23 @@ public class PlayerController : MonoBehaviour
                    0f,
                    rigidbody.linearVelocity.z
                 );
+            return;
+        }
+
+        bool isWallSliding =
+            !isGrounded &&
+            isTouchingWall &&
+            rigidbody.linearVelocity.y < 0f &&
+            Mathf.Sign(move) == -Mathf.Sign(wallNormal.x);
+
+        if (isWallSliding)
+        {
+            rigidbody.linearVelocity = new Vector3(
+                0f, 
+                Mathf.Max(rigidbody.linearVelocity.y, wallSlideSpeed),
+                rigidbody.linearVelocity.z
+            );
+
             return;
         }
 
@@ -84,14 +107,15 @@ public class PlayerController : MonoBehaviour
         if (isRecording)
         {
             recordedActions.Add(new ActionData(
-                    transform.position,
-                    transform.rotation,
-                    rigidbody.linearVelocity,
-                    false,
-                    isDashing,
-                    isGrounded,
-                    Time.time - startTime
-                ));
+                transform.position,
+                transform.rotation,
+                rigidbody.linearVelocity,
+                false,
+                isDashing,
+                isGrounded,
+                timestamp
+            ));
+
         }
     }
 
@@ -134,6 +158,8 @@ public class PlayerController : MonoBehaviour
     private void OnCollisionStay(Collision other)
     {
 
+        isTouchingWall = false;
+
         foreach(ContactPoint contact in other.contacts)
         {
             if (contact.normal.y > 0.7)
@@ -142,6 +168,12 @@ public class PlayerController : MonoBehaviour
                 jumpCharge = 1;
                 dashCharges = 1;
             }
+
+            if (Math.Abs(contact.normal.x) > 0.7f)
+            {
+                isTouchingWall = true;
+                wallNormal = contact.normal;
+            }
         }
 
     }
@@ -149,6 +181,7 @@ public class PlayerController : MonoBehaviour
     private void OnCollisionExit(Collision other)
     {
         isGrounded = false;
+        isTouchingWall = false;
     }
 
 
