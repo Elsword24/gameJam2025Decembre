@@ -2,7 +2,7 @@
 - Project name: Vrunneuse
 - Unity version: Unity 6000.3.1f1
 - Active game object:
-  - Name: Player
-  - Tag: Untagged
-  - Layer: Player
+  - Name: Main Camera
+  - Tag: MainCamera
+  - Layer: Default
 <!-- UNITY CODE ASSIST INSTRUCTIONS END -->
