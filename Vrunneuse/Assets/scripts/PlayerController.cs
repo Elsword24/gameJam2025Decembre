@@ -21,12 +21,22 @@ public class PlayerController : MonoBehaviour
     public RespawnManager RespawnManager;
     private bool isRespawning = false;
     public float dashDuration = 0.15f;
+    private bool isTouchingWall = false;
+    private Vector3 wallNormal;
+    public float wallSlideSpeed = -1.5f;
+    private Animator animator;
 
     public GameObject canvasPause;
     public bool IsPauseMenuOpen = false;
 
-    public Vector3 externalVelocity = Vector3.zero;
+    enum PlayerAnimState
+    {
+        Idle,
+        Run,
+        Jump
+    }
 
+    PlayerAnimState currentAnim;
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -34,6 +44,7 @@ public class PlayerController : MonoBehaviour
     {
         canvasPause.SetActive(false);
         rigidbody = GetComponent<Rigidbody>();
+        animator = GetComponentInChildren<Animator>();
         startTime = Time.time;
     }
 
@@ -41,10 +52,11 @@ public class PlayerController : MonoBehaviour
 
     private float move;
 
-
     void Update()
     {
-        move = -Input.GetAxis("Horizontal");
+        Debug.Log($"Grounded={isGrounded} | Y={rigidbody.linearVelocity.y} | X={rigidbody.linearVelocity.x}");
+        Debug.Log(currentAnim);
+
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             Debug.Log("Escape Press");
@@ -54,7 +66,8 @@ public class PlayerController : MonoBehaviour
         }
         if (!IsPauseMenuOpen)
         {
-            if (Input.GetKeyDown(KeyCode.Space))
+            move = -Input.GetAxis("Horizontal");
+            if (Input.GetKeyDown(KeyCode.Space) && jumpCharge >0)
             {
                 Jump();
             }
@@ -62,17 +75,53 @@ public class PlayerController : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.LeftShift))
             {
                 Dash();
-
             }
         }
+        else
+        {
+            move = 0f;
+        }
 
+        if (isGrounded)
+        {
+            Debug.Log("Landed");
+        }
+
+        if (!isGrounded)
+        {
+            PlayAnim(PlayerAnimState.Jump);
+        }
+        else if (Mathf.Abs(move) > 0.1f)
+        {
+            PlayAnim(PlayerAnimState.Run);
+        }
+        else
+        {
+            PlayAnim(PlayerAnimState.Idle);
+        }
+
+
+
+        animator.SetFloat("speed", Mathf.Abs(move));
+        animator.SetBool("IsGrounded", isGrounded);
+        animator.SetFloat("VerticalSpeed", rigidbody.linearVelocity.y);
     }
 
     private void FixedUpdate()
     {
-        if (externalVelocity == Vector3.zero)
+        if (isGrounded)
+        {
+            jumpCharge = 1;
+            dashCharges = 1;
+        }
+        float timestamp = Time.fixedTime - startTime;
+
+        if (!isTouchingWall)
+        {
             rigidbody.AddForce(Vector3.down * Gravity, ForceMode.Acceleration);
-        
+        }
+
+
         if (IsPauseMenuOpen) return;
         if (isDashing)
         {
@@ -166,10 +215,16 @@ public class PlayerController : MonoBehaviour
 
     private void OnCollisionStay(Collision other)
     {
-        isGrounded = true;
-        jumpCharge = 1;
-        dashCharges = 1;
-    }
+        isTouchingWall = false;
+
+        foreach(ContactPoint contact in other.contacts)
+        {
+            if (contact.normal.y > 0.7)
+            {
+                isGrounded = true;
+                jumpCharge = 1;
+                dashCharges = 1;
+            }
 
     private void OnCollisionExit(Collision other)
     {
@@ -210,11 +265,27 @@ public class PlayerController : MonoBehaviour
         isRespawning = false;
     }
 
+    void PlayAnim(PlayerAnimState newState)
+    {
+        if (currentAnim == newState) return;
+
+        currentAnim = newState;
+
+        animator.CrossFade(
+            newState.ToString(),
+            0.15f,  
+            0        
+        );
+    }
+
+
+
     [System.Serializable]
     public class ActionWrapper
     {
         public List<ActionData> actions;
     }
+
 
 
 }
