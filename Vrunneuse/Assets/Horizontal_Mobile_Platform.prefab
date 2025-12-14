@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 3991541093415276409}
   - component: {fileID: 4393528310695493495}
   m_Layer: 0
-  m_Name: Mobile_Plateform
+  m_Name: Horizontal_Mobile_Platform
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -60,7 +60,7 @@ public class PlayerController : MonoBehaviour
 
         Vector3 targetVelocity = new Vector3(
             move * speed + externalVelocity.x,
-            rigidbody.linearVelocity.y,
+            rigidbody.linearVelocity.y+externalVelocity.y,
             rigidbody.linearVelocity.z
         );
        
@@ -69,7 +69,7 @@ public class PlayerController : MonoBehaviour
         {
             rigidbody.linearVelocity = new Vector3(
                 targetVelocity.x,
-                rigidbody.linearVelocity.y,
+                rigidbody.linearVelocity.y+externalVelocity.y,
                 rigidbody.linearVelocity.z
             );
         }
@@ -82,8 +82,8 @@ public class PlayerController : MonoBehaviour
             );
         }
 
-        Debug.Log("Player velocity AFTER set: " + rigidbody.linearVelocity.x +
-                  " | Target was: " + targetVelocity.x);
+        Debug.Log("Player velocity AFTER set: " + rigidbody.linearVelocity.y +
+                  " | Target was: " + targetVelocity.y);
     }
 
     void Jump()
