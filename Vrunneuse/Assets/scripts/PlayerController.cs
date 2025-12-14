@@ -20,11 +20,19 @@ public class PlayerController : MonoBehaviour
     private bool isRecording = true;
     public RespawnManager RespawnManager;
     private bool isRespawning = false;
+    public float dashDuration = 0.15f;
+
+    public GameObject canvasPause;
+    public bool IsPauseMenuOpen = false;
+
+    public Vector3 externalVelocity = Vector3.zero;
+
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        canvasPause.SetActive(false);
         rigidbody = GetComponent<Rigidbody>();
         startTime = Time.time;
     }
@@ -39,39 +47,72 @@ public class PlayerController : MonoBehaviour
         move = -Input.GetAxis("Horizontal");
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            print("test");
+            Debug.Log("Escape Press");
+            IsPauseMenuOpen = !IsPauseMenuOpen;
+            canvasPause.SetActive(IsPauseMenuOpen);
+            Time.timeScale=IsPauseMenuOpen ? 0 : 1;
         }
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (!IsPauseMenuOpen)
         {
-            Jump();
-        }
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                Jump();
+            }
 
-        if (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.LeftShift))
-        {
-            Dash();
+            if (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.LeftShift))
+            {
+                Dash();
+
+            }
         }
 
     }
 
     private void FixedUpdate()
     {
-        rigidbody.AddForce(Vector3.down * Gravity, ForceMode.Acceleration);
-        if (isDashing) return;
+        if (externalVelocity == Vector3.zero)
+            rigidbody.AddForce(Vector3.down * Gravity, ForceMode.Acceleration);
+        
+        if (IsPauseMenuOpen) return;
+        if (isDashing)
+        {
+            rigidbody.linearVelocity = new Vector3(
+                   rigidbody.linearVelocity.x,
+                   0f,
+                   rigidbody.linearVelocity.z
+                );
+            return;
+
+                }
 
         float control = isGrounded ? 1f : airControl;
 
         Vector3 targetVelocity = new Vector3(
-            move * speed,
+            move * speed + externalVelocity.x,
             rigidbody.linearVelocity.y,
             rigidbody.linearVelocity.z
         );
+       
 
-        rigidbody.linearVelocity = Vector3.Lerp(
-            rigidbody.linearVelocity,
-            targetVelocity,
-            control
-        );
+        if (externalVelocity != Vector3.zero)
+        {
+            rigidbody.linearVelocity = new Vector3(
+                targetVelocity.x,
+                externalVelocity.y !=0.0f ? externalVelocity.y : rigidbody.linearVelocity.y,
+                rigidbody.linearVelocity.z
+            );
+        }
+        else
+        {
+            rigidbody.linearVelocity = Vector3.Lerp(
+                rigidbody.linearVelocity,
+                targetVelocity,
+                control
+            );
+        }
 
+        Debug.Log("Player velocity AFTER set: " + rigidbody.linearVelocity.y +
+                  " | Target was: " + targetVelocity.y);
         if (isRecording)
         {
             recordedActions.Add(new ActionData(
@@ -90,9 +131,9 @@ public class PlayerController : MonoBehaviour
     {
         if (jumpCharge != 0)
         {
+            externalVelocity = Vector3.zero;
             rigidbody.AddForce(jump * jumpForce, ForceMode.Impulse);
             jumpCharge --;
-
         }
     }
 
@@ -100,20 +141,26 @@ public class PlayerController : MonoBehaviour
     {
         if (dashCharges == 0 || isDashing) return;
 
+
         isDashing = true;
+        dashCharges--;
 
         Vector3 dashDirection = new Vector3(move, 0f, 0f);
 
         if (dashDirection == Vector3.zero) dashDirection = transform.right;
 
+        rigidbody.useGravity = false;
+        rigidbody.linearVelocity = Vector3.zero;
+        rigidbody.angularVelocity = Vector3.zero;
+
         rigidbody.AddForce(dashDirection.normalized * dashForce, ForceMode.Impulse);
-        dashCharges --;
 
         Invoke(nameof(EndDash), 0.2f);
     }
 
     void EndDash()
     {
+        rigidbody.useGravity = true;
         isDashing = false;
     }
 
