@@ -47,5 +47,14 @@ public class AvatarController : MonoBehaviour
         currentIndex = 0;
         replayStartTime = Time.time;
         Debug.Log($"Replay started {actions.Count} actions to do");
+        EndReplay();
+    }
+
+    public PlayerController playerController;
+
+    void EndReplay()
+    {
+        playerController.EnablePhysics();
+        playerController.StartRecording();
     }
 }

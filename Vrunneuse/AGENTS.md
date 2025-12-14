@@ -2,7 +2,7 @@
 - Project name: Vrunneuse
 - Unity version: Unity 6000.3.1f1
 - Active game object:
-  - Name: avatar
+  - Name: respawnPoint
   - Tag: Untagged
   - Layer: Default
 <!-- UNITY CODE ASSIST INSTRUCTIONS END -->

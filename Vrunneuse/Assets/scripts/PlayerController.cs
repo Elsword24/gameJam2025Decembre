@@ -75,8 +75,6 @@ public class PlayerController : MonoBehaviour
         {
             move = 0f;
         }
-        Debug.Log($"Speed={Mathf.Abs(rigidbody.linearVelocity.x)} | Grounded={isGrounded} | Y={rigidbody.linearVelocity.y}");
-
     }
 
     private void FixedUpdate()
@@ -250,6 +248,20 @@ public class PlayerController : MonoBehaviour
     public class ActionWrapper
     {
         public List<ActionData> actions;
+    }
+
+    public void DisablePhysics()
+    {
+        rigidbody.linearVelocity = Vector3.zero;
+        rigidbody.angularVelocity = Vector3.zero;
+        rigidbody.useGravity = false;
+        rigidbody.isKinematic = true;
+    }
+
+    public void EnablePhysics()
+    {
+        rigidbody.isKinematic = false;
+        rigidbody.useGravity = true;
     }
 
 
